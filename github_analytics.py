@@ -22,6 +22,25 @@ def load_data():
     df['repo_name'] = repo_names
     return df
 
+def display_bar_chart(
+    df, x, y, title, xlabel, ylabel, fig_size=(10, 6), palette="coolwarm"
+):
+    fig, ax = plt.subplots(figsize=fig_size)
+    sns.barplot(data=df, x=x, y=y, ax=ax, palette=palette)
+    ax.set_title(title, fontsize=16)
+    ax.set_xlabel(xlabel, fontsize=14)
+    ax.set_ylabel(ylabel, fontsize=14)
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
+
+def display_scatter_plot(df, x, y, title, xlabel, ylabel, fig_size=(10, 6)):
+    fig, ax = plt.subplots(figsize=fig_size)
+    sns.scatterplot(data=df, x=x, y=y, ax=ax, hue="language", palette="viridis", s=100)
+    ax.set_title(title, fontsize=16)
+    ax.set_xlabel(xlabel, fontsize=14)
+    ax.set_ylabel(ylabel, fontsize=14)
+    st.pyplot(fig)
+
 
 def run():
     df = load_data()
@@ -60,26 +79,63 @@ def run():
             st.subheader("Top 10 Repositories by Stars")
             top_repos_by_stars = df_filtered.nlargest(10, "stars_count")
             
-            fig, ax = plt.subplots(figsize=(10, 6))
-            sns.barplot(data=top_repos_by_stars, x="stars_count", y="repositories", ax=ax, palette="Blues_d")
-            ax.set_title("Top 10 Repositories by Stars", fontsize=16)
-            ax.set_xlabel("Stars", fontsize=14)
-            ax.set_ylabel("Repository", fontsize=14)
-            plt.xticks(rotation=45)
-            st.pyplot(fig)
+            display_bar_chart(
+            top_repos_by_stars,
+            "stars_count",
+            "repo_name",
+            "Top 10 Repositories by Stars",
+            "Stars",
+            "Repository",
+            palette="Blues_d",
+            )
 
         # Top Repositories by Forks
         with col2:
             st.subheader("Top 10 Repositories by Forks")
             top_repos_by_forks = df_filtered.nlargest(10, "forks_count")
             
-            fig, ax = plt.subplots(figsize=(10, 6))
-            sns.barplot(data=top_repos_by_forks, x="forks_count", y="repositories", ax=ax, palette="Greens_d")
-            ax.set_title("Top 10 Repositories by Forks", fontsize=16)
-            ax.set_xlabel("Forks", fontsize=14)
-            ax.set_ylabel("Repository", fontsize=14)
-            plt.xticks(rotation=45)
-            st.pyplot(fig)
+            display_bar_chart(
+            top_repos_by_forks,
+            "forks_count",
+            "repo_name",
+            "Top 10 Repositories by Forks",
+            "Forks",
+            "Repository",
+            palette="Greens_d",
+            )
 
+    with tab2:
+        if selected_language != "All":
+            col1, col2 = st.columns(2)
+
+            # Stars vs Forks Scatter Plot
+            with col1:
+                st.subheader("Stars vs. Forks")
+                display_scatter_plot(
+                    df_filtered,
+                    "stars_count",
+                    "forks_count",
+                    "Stars vs. Forks",
+                    "Stars",
+                    "Forks",
+                )
+
+            # Issues vs Pull Requests Scatter Plot
+            with col2:
+                st.subheader("Issues vs. Pull Requests")
+                display_scatter_plot(
+                    df_filtered,
+                    "issues_count",
+                    "pull_requests",
+                    "Issues vs. Pull Requests",
+                    "Issues",
+                    "Pull Requests",
+                )
+        else:
+            st.warning(
+                "Please select a specific language to see the Stars vs Forks and Issues vs Pull Requests analysis."
+            )
+
+            
 if __name__ == "__main__":
     run()
