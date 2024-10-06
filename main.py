@@ -4,9 +4,9 @@ import repository_analytics
 
 def main():
 
-    st.markdown("### Welcome to the GitHub Analytics Dashboard!")
+    # st.markdown("### Welcome to the GitHub Analytics Dashboard!")
 
-    st.markdown("---")
+    # st.markdown("---")
 
     page = st.sidebar.selectbox("Choose a page", ["Home", "GitHub Dataset Analysis", "Repository Dataset Analysis"])
 
