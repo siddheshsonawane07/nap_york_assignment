@@ -68,44 +68,72 @@ def run():
 
     st.header("Repository Insights")
     tab1, tab2, tab3 = st.tabs(
-        ["Popular Repositories", "Stars and Forks Analysis", "Contributors and Issues"]
+        ["Popular Repositories", "Stars vs Forks ", "Issues vs Pull Requests"]
     )
 
     # Popular Repositories
     with tab1:
-        col1, col2 = st.columns(2)
-
         # Top Repositories by Stars
-        with col1:
-            st.subheader("Top 10 Repositories by Stars")
-            top_repos_by_stars = df_filtered.nlargest(10, "stars_count")
-            
-            display_bar_chart(
+        st.subheader("Top 10 Repositories by Stars")
+        top_repos_by_stars = df_filtered.nlargest(10, "stars_count")
+        display_bar_chart(
             top_repos_by_stars,
             "stars_count",
             "repo_name",
             "Top 10 Repositories by Stars",
             "Stars",
             "Repository",
+            fig_size=(12, 6),
             palette="Blues_d",
-            )
+        )
+
+        st.markdown("---")
 
         # Top Repositories by Forks
-        with col2:
-            st.subheader("Top 10 Repositories by Forks")
-            top_repos_by_forks = df_filtered.nlargest(10, "forks_count")
-            
-            display_bar_chart(
+        st.subheader("Top 10 Repositories by Forks")
+        top_repos_by_forks = df_filtered.nlargest(10, "forks_count")
+        display_bar_chart(
             top_repos_by_forks,
             "forks_count",
             "repo_name",
             "Top 10 Repositories by Forks",
             "Forks",
             "Repository",
+            fig_size=(12, 6),
             palette="Greens_d",
-            
-            )
+        )
 
+        st.markdown("---")
+
+        # Top Repositories by Contributions
+        st.subheader("Top 10 Repositories by Contributions")
+        top_repos_by_contributors = df_filtered.nlargest(10, "contributors")
+        display_bar_chart(
+            top_repos_by_contributors,
+            "contributors",
+            "repo_name",
+            "Top 10 Repositories by Contributions",
+            "Contributors",
+            "Repository",
+            fig_size=(12, 6),
+            palette="Oranges_d",
+        )
+
+        st.markdown("---")
+
+        # Top Repositories by Issues
+        st.subheader("Top 10 Repositories by number of Issues")
+        top_repos_by_issues = df_filtered.nlargest(10, "issues_count")
+        display_bar_chart(
+            top_repos_by_issues,
+            "issues_count",
+            "repo_name",
+            "op 10 Repositories by number of Issues",
+            "Issues",
+            "Repository",
+            fig_size=(12, 6),
+            palette="Reds_d",
+        )
     # Stars and Fork Analysis
     with tab2:
         if selected_language != "All":
