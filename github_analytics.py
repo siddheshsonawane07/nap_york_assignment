@@ -52,6 +52,50 @@ def avg_metrics_by_language(df):
     ax.set_title("Average Metrics by Top 10 Programming Languages")
     st.pyplot(fig)
 
+def plot_language_distribution(df):
+    st.header("Language Distribution")
+    
+    lang_distribution = df["language"].value_counts().nlargest(10)
+    
+
+    total = lang_distribution.sum()
+    lang_percentages = lang_distribution / total * 100
+    
+
+    plot_df = pd.DataFrame({
+        'Language': lang_percentages.index,
+        'Percentage': lang_percentages.values,
+        'Count': lang_distribution.values
+    })
+    
+
+    plot_df = plot_df.sort_values('Percentage', ascending=True)
+    
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    bars = ax.barh(plot_df['Language'], plot_df['Percentage'], 
+                   color=sns.color_palette("viridis", n_colors=len(plot_df)))
+    
+    ax.set_xlabel('Percentage of Repositories')
+    ax.set_title('Top 10 Programming Languages', fontsize=16)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    
+
+    for i, bar in enumerate(bars):
+        width = bar.get_width()
+        count = plot_df.iloc[i]['Count']
+        ax.text(width, bar.get_y() + bar.get_height()/2, 
+                f'{width:.1f}% ({count})', 
+                va='center', ha='left', fontweight='bold')
+    
+    ax.grid(axis='x', linestyle='--', alpha=0.7)
+    
+    plt.tight_layout()
+    
+    st.pyplot(fig)
+
 def run():
     df = load_data()
     sns.set_theme(style="darkgrid")
@@ -65,14 +109,8 @@ def run():
     )
 
     if selected_language == "All":
-        st.header("Language Distribution")
-        lang_distribution = df["language"].value_counts().nlargest(10)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        lang_distribution.plot(
-            kind="pie", ax=ax, autopct="%1.1f%%", startangle=90, cmap="coolwarm"
-        )
-        ax.set_ylabel("")
-        st.pyplot(fig)
+        plot_language_distribution(df)
+
 
     tab1, tab2, tab3,tab4 = st.tabs(
         ["Popular Repositories", "Average Metrics by Language", "Stars vs Forks ", "Issues vs Pull Requests"]
