@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 @st.cache_data
 def load_data():
-    """Load and preprocess GitHub dataset."""
     df = pd.read_csv("./csv/github_dataset.csv")
     
     df = df.replace('NULL', None)
@@ -38,12 +37,24 @@ def display_scatter_plot(df, x, y, title, xlabel, ylabel, fig_size):
     ax.set_ylabel(ylabel, fontsize=14)
     st.pyplot(fig)
 
+def avg_metrics_by_language(df):
+    st.subheader("Average Metrics by Language")
+    lang_metrics = df.groupby('language').agg({
+        'stars_count': 'mean',
+        'forks_count': 'mean',
+        'issues_count': 'mean',
+        'pull_requests': 'mean',
+        'contributors': 'mean'
+    }).nlargest(10, 'stars_count')
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.heatmap(lang_metrics, annot=True, cmap="YlGnBu", fmt=".0f")
+    ax.set_title("Average Metrics by Top 10 Programming Languages")
+    st.pyplot(fig)
 
 def run():
     df = load_data()
     sns.set_theme(style="darkgrid")
-    # st.dataframe(df)
-    # st.markdown("github analytics page")
     
     st.sidebar.header("Filters")
     languages = ["All"] + sorted(df["language"].dropna().unique().tolist())
@@ -63,9 +74,8 @@ def run():
         ax.set_ylabel("")
         st.pyplot(fig)
 
-    st.header("Repository Insights")
-    tab1, tab2, tab3 = st.tabs(
-        ["Popular Repositories", "Stars vs Forks ", "Issues vs Pull Requests"]
+    tab1, tab2, tab3,tab4 = st.tabs(
+        ["Popular Repositories", "Average Metrics by Language", "Stars vs Forks ", "Issues vs Pull Requests"]
     )
 
     # Popular Repositories
@@ -133,8 +143,13 @@ def run():
             palette="Reds_d",
         )
 
-    # Stars and Fork Analysis
+
     with tab2:
+        avg_metrics_by_language(df)
+        st.markdown("---")
+
+    # Stars and Fork Analysis
+    with tab3:
         if selected_language != "All":
             st.subheader("Stars vs. Forks")
             display_scatter_plot(
@@ -152,7 +167,7 @@ def run():
             )
     
     # Issues vs Pull Requests Scatter Plot
-    with tab3:
+    with tab4:
         if selected_language != "All":
             st.subheader("Issues vs. Pull Requests")
             display_scatter_plot(

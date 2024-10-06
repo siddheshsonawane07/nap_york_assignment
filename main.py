@@ -1,6 +1,5 @@
 import streamlit as st
 import github_analytics
-# import repository_analytics
 
 def main():
     st.markdown("<h1 style='text-align: center; color: #FFA500;'>GitHub Projects Dashboard</h1>", unsafe_allow_html=True)
