@@ -3,9 +3,6 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.markdown("<h1 style='text-align: center; color: #FFA500;'>GitHub Projects Dashboard</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #D3D3D3;'>Explore trends and insights from popular repositories</p>", unsafe_allow_html=True)
-
 @st.cache_data
 def load_data():
     """Load and preprocess GitHub dataset."""
@@ -73,6 +70,7 @@ def run():
 
     # Popular Repositories
     with tab1:
+
         # Top Repositories by Stars
         st.subheader("Top 10 Repositories by Stars")
         top_repos_by_stars = df_filtered.nlargest(10, "stars_count")
@@ -128,12 +126,13 @@ def run():
             top_repos_by_issues,
             "issues_count",
             "repo_name",
-            "op 10 Repositories by number of Issues",
+            "Top 10 Repositories by number of Issues",
             "Issues",
             "Repository",
             fig_size=(12, 6),
             palette="Reds_d",
         )
+
     # Stars and Fork Analysis
     with tab2:
         if selected_language != "All":
@@ -147,10 +146,9 @@ def run():
                 "Forks",
                 (15,10)
             )
-
         else:
             st.warning(
-                    "Please select a specific language to see the Stars vs Forks and Issues vs Pull Requests analysis."
+                    "Please select a specific language to see the Stars vs Forks analysis."
             )
     
     # Issues vs Pull Requests Scatter Plot
@@ -166,6 +164,10 @@ def run():
                 "Pull Requests",
                 (15,10)
 
+            )
+        else:
+            st.warning(
+                    "Please select a specific language to see the Issues vs Pull Requests analysis."
             )
 
 if __name__ == "__main__":
