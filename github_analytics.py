@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 @st.cache_data
 def load_data():
     """Load and preprocess GitHub dataset."""
-    df = pd.read_csv("./data/github_dataset.csv")
+    df = pd.read_csv("./csv/github_dataset.csv")
     
     df = df.replace('NULL', None)
     
