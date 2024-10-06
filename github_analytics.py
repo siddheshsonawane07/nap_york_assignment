@@ -33,7 +33,7 @@ def display_bar_chart(
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-def display_scatter_plot(df, x, y, title, xlabel, ylabel, fig_size=(10, 6)):
+def display_scatter_plot(df, x, y, title, xlabel, ylabel, fig_size):
     fig, ax = plt.subplots(figsize=fig_size)
     sns.scatterplot(data=df, x=x, y=y, ax=ax, hue="language", palette="viridis", s=100)
     ax.set_title(title, fontsize=16)
@@ -71,6 +71,7 @@ def run():
         ["Popular Repositories", "Stars and Forks Analysis", "Contributors and Issues"]
     )
 
+    # Popular Repositories
     with tab1:
         col1, col2 = st.columns(2)
 
@@ -102,40 +103,42 @@ def run():
             "Forks",
             "Repository",
             palette="Greens_d",
+            
             )
 
+    # Stars and Fork Analysis
     with tab2:
         if selected_language != "All":
-            col1, col2 = st.columns(2)
-
-            # Stars vs Forks Scatter Plot
-            with col1:
-                st.subheader("Stars vs. Forks")
-                display_scatter_plot(
-                    df_filtered,
-                    "stars_count",
-                    "forks_count",
-                    "Stars vs. Forks",
-                    "Stars",
-                    "Forks",
-                )
-
-            # Issues vs Pull Requests Scatter Plot
-            with col2:
-                st.subheader("Issues vs. Pull Requests")
-                display_scatter_plot(
-                    df_filtered,
-                    "issues_count",
-                    "pull_requests",
-                    "Issues vs. Pull Requests",
-                    "Issues",
-                    "Pull Requests",
-                )
-        else:
-            st.warning(
-                "Please select a specific language to see the Stars vs Forks and Issues vs Pull Requests analysis."
+            st.subheader("Stars vs. Forks")
+            display_scatter_plot(
+                df_filtered,
+                "stars_count",
+                "forks_count",
+                "Stars vs. Forks",
+                "Stars",
+                "Forks",
+                (15,10)
             )
 
-            
+        else:
+            st.warning(
+                    "Please select a specific language to see the Stars vs Forks and Issues vs Pull Requests analysis."
+            )
+    
+    # Issues vs Pull Requests Scatter Plot
+    with tab3:
+        if selected_language != "All":
+            st.subheader("Issues vs. Pull Requests")
+            display_scatter_plot(
+                df_filtered,
+                "issues_count",
+                "pull_requests",
+                "Issues vs. Pull Requests",
+                "Issues",
+                "Pull Requests",
+                (15,10)
+
+            )
+
 if __name__ == "__main__":
     run()
